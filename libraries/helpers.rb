@@ -21,6 +21,51 @@ fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|
 IPV4_ADDR ||= /((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])/
 
 module DockerHelpers
+  class PortBinding
+
+    attr_reader :host_ip, :host_port, :container_port
+
+    def initialize(value)
+      @host_ip = nil
+      @host_port = nil
+      @container_port = nil
+      parse(value)
+    end
+
+    def binder
+      {
+        "#{container_port}" => [
+          {
+            'HostIp' => host_ip,
+            'HostPort' => host_port
+          }
+        ]
+      }
+    end
+
+    def exposer
+      { "#{container_port}" => {} }
+    end
+
+    private
+
+    def parse(value)
+      parts = value.split(':')
+      case parts.length
+      when 3
+        @host_ip = parts[0]
+        @host_port = parts[1]
+        @container_port = parts[2]
+      when 2
+        @host_ip = '0.0.0.0'
+        @host_port = parts[0]
+        @container_port = parts[1]
+      when 1
+        @container_port = parts[0]
+      end
+    end
+  end
+
   # Path to docker executable
   def docker_arch
     node['kernel']['machine']
