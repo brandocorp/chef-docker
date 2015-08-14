@@ -143,6 +143,10 @@ describe command("[ ! -z `docker ps -qaf 'name=an_udp_echo_server$'` ]") do
   its(:exit_status) { should eq 0 }
 end
 
+describe command("[ ! -z `docker ps -qaf 'name=a_multiport_echo_server$'` ]") do
+  its(:exit_status) { should eq 0 }
+end
+
 # docker_container[bill]
 
 describe command("[ ! -z `docker ps -qaf 'name=bil$'` ]") do

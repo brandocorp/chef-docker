@@ -62,6 +62,15 @@ docker_container 'an_udp_echo_server' do
   action :run
 end
 
+# multiple ports
+docker_container 'a_multiport_echo_server' do
+  repo 'alpine'
+  tag '3.1'
+  command 'nc -ll -p 10000 -e /bin/cat'
+  ports ['7777:10000','9999:10000']
+  action :run
+end
+
 ##############
 # action :kill
 ##############
